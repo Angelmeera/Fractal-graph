@@ -4,7 +4,7 @@ This repository contains Jupyter notebooks that explore fractal constructions an
 ### 1. `Graceful_labeling_of_Viscek_fractal.ipynb`
 - Constructs the **Vicsek fractal graph** using recursive subdivision.  
 - Applies **graceful and odd graceful labeling** techniques.  
-- Explores how graph labeling can enhance applications in **communication networks**, such as frequency assignment and channel allocation.
+- This implementation can help in communication networks by providing graph structures and labeling patterns that can later be extended for tasks such as frequency or channel assignment.
 
 ### 2. `Heighway_Dragon.ipynb`
 - Implements the **Heighway Dragon curve** using **L-systems**.  
