@@ -73,7 +73,7 @@ pip install numpy matplotlib networkx ortools
 
 **Angel Meera**  
 Indian Institute of Information Technology, Lucknow  
-[Faculty Profile](https://iiitl.ac.in/index.php/personnel/angel-meera/)
+[Scholar Profile](https://iiitl.ac.in/index.php/personnel/angel-meera/)
 
 ## Citation
 
