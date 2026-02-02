@@ -49,6 +49,29 @@ This notebook provides a foundational treatment of the Vicsek fractal using Iter
 **Mathematical Foundation:**  
 The Vicsek fractal serves as an exemplar for studying how deterministic fractal rules translate into graph-theoretic properties, providing insights into the relationship between geometric self-similarity and combinatorial structure.
 
+###4. Fibonacci_Word_Fractal_Odd_Graceful.ipynb
+
+This notebook explores the Fibonacci word fractal and establishes an odd graceful labeling for the induced path graph.
+
+**Key Features:**
+
+-Generation of Fibonacci words using symbolic substitution rules
+-Construction of the Fibonacci word fractal via deterministic turning rules
+-Graph interpretation of the fractal curve as a path graph
+-Explicit odd graceful vertex labeling and induced edge labeling
+-Visualization with non-overlapping, scale-invariant labels
+
+**Mathematical Significance:**
+The Fibonacci word fractal provides a bridge between symbolic dynamics and graph labeling theory. Its recursive structure enables inductive proofs of odd graceful labeling and offers insight into labeling problems on self-similar path graphs.
+
+**Research Relevance:** 
+This construction is particularly relevant for:
+
+-labeled path decompositions
+-fractal graph limits
+-recursive network topologies
+-extensions to graceful, odd graceful, and α-labelings
+ 
 ## Dependencies
 
 The computational framework requires the following Python packages:
@@ -68,6 +91,8 @@ pip install numpy matplotlib networkx ortools
 [1] Vicsek, T. (1983). Fractal models for diffusion controlled aggregation. *Journal of Physics A: Mathematical and General*, 16(17), L647. https://doi.org/10.1088/0305-4470/16/17/003
 
 [2] Ngai, S.-M., & Nguyen, N. T. (2003). The Heighway Dragon Revisited. *Discrete & Computational Geometry*, 29, 603-623. https://api.semanticscholar.org/CorpusID:8236024
+
+[3] Monnerot-Dumaine, A. (2009). The Fibonacci Word Fractal. HAL Open Science. hal-00367972. https://hal.science/hal-00367972
 
 ## Author
 
