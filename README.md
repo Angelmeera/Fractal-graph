@@ -49,7 +49,7 @@ This notebook provides a foundational treatment of the Vicsek fractal using Iter
 **Mathematical Foundation:**  
 The Vicsek fractal serves as an exemplar for studying how deterministic fractal rules translate into graph-theoretic properties, providing insights into the relationship between geometric self-similarity and combinatorial structure.
 
-###4. **Fibonacci_Word_Fractal_Odd_Graceful.ipynb**
+**###4. Fibonacci_Word_Fractal_Odd_Graceful.ipynb**
 
 This notebook explores the Fibonacci word fractal and establishes an odd graceful labeling for the induced path graph.
 
