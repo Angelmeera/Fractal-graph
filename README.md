@@ -4,7 +4,7 @@
 
 This repository presents a computational framework for investigating fractal constructions and graph labeling problems, with particular emphasis on **Iterated Function Systems (IFS)** and **graceful labeling techniques**. The work explores the intersection of fractal geometry and graph theory, providing implementations that bridge theoretical constructs with practical applications in communication networks and graph-theoretic optimization.
 
-It accompanies the paper *On Graceful Labeling of Finite Approximation of Fractal Graphs*. The notebooks in Part 1 build and illustrate the fractal graphs and their labelings; the scripts in Part 2 reproduce the exhaustive computations behind the paper's tables and claims, each printing the numbers that appear in the text so that any result can be checked directly.
+It accompanies the paper *Graceful Labelings of Fractal Graphs and a $C_4$-Cactus Boundary Bound*. The notebooks in Part 1 build and illustrate the fractal graphs and their labelings; the scripts in Part 2 reproduce the exhaustive computations behind the paper's tables and claims, each printing the numbers that appear in the text so that any result can be checked directly.
 
 ## Research Context
 
