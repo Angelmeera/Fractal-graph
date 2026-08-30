@@ -8,24 +8,29 @@ Usage:
     python claim24.py 5          # restrict to b <= 5
 
 This script reports the result PER PATTERN rather than stopping at the first
-one that fits.  That breakdown matters: patterns (i) and (iii) of the lemma as
-originally stated require eta = lambda to be a label unused by f', which is
-impossible, since the induced label 1 forces the vertices labeled lambda and
-lambda+1 to be adjacent in every alpha-labeling.  The columns for those two
-patterns are therefore identically zero, and the surviving patterns are the
-two with f'(c) = lambda.
+one that fits, and it tests four arrangements rather than the two the lemma
+states.  Patterns (ii) and (iv) below are the two patterns of Lemma 22, with
+f'(c) = lambda; (i) and (iii) are the other two arrangements of {1,2,3,4} with
+alternating sum zero, which Remark 23 rules out because they require eta =
+lambda to be a label unused by f'.  No alpha-labeling permits that: the induced
+label 1 forces the vertices labeled lambda and lambda+1 to be adjacent.  Their
+columns therefore come out identically zero, which is the computational form of
+Remark 23's exhaustiveness argument.
 
 Expected output for b <= 6:
     618 pairs, 0 with no matching pattern
     feasible counts:  (i) 0   (ii) 344   (iii) 0   (iv) 342
                      (i*) 0  (ii*) 274  (iii*) 0  (iv*) 272
+    i.e. the two patterns of Lemma 22 cover every pair, and the two
+    arrangements Remark 23 excludes are never feasible.
 """
 import sys, time, collections
 import networkx as nx
 from ortools.sat.python import cp_model
 from common import cactus_census, alpha_model, solve
 
-# (f'(c) - lambda, eta - lambda) for each pattern of Lemma 22.
+# (f'(c) - lambda, eta - lambda).  (ii) and (iv) are the two patterns of
+# Lemma 22; (i) and (iii) are the arrangements Remark 23 excludes.
 # c in the low class:
 LOW = {'(i)': (-1, 0), '(ii)': (0, -1), '(iii)': (-2, 0), '(iv)': (0, -2)}
 # and the mirror, obtained by applying f^c(v) = q - f(v) before and after:
@@ -101,7 +106,8 @@ def main(bmax=6):
     dead = [nm for nm in list(LOW) + list(HIGH) if cnt[nm] == 0]
     if dead:
         print(f"\nNever feasible: {', '.join(dead)}"
-              f"  -- these are the patterns requiring eta = lambda.")
+              f"\n  -- the arrangements requiring eta = lambda, as Remark 23 states."
+              f"\n  The two patterns of Lemma 22 and their mirrors cover every pair.")
 
 
 if __name__ == "__main__":

@@ -16,7 +16,8 @@ import sys, time
 import numpy as np
 
 
-def fib_word(n):
+def fibonacci_word(n):
+    """W_n, with W_1 = 1, W_2 = 0, W_n = W_{n-1} W_{n-2}; |W_n| = F_n."""
     if n == 1:
         return "1"
     if n == 2:
@@ -48,9 +49,9 @@ def curve_points(word):
 
 def selfavoiding(nmax=30):
     print("=== self-avoidance of the Fibonacci word curve ===")
-    print("   n        F_n   vertices   distinct   self-avoiding?")
+    print("   n     |W_n| = F_n   vertices   distinct   self-avoiding?")
     for n in range(3, nmax + 1):
-        w = fib_word(n)
+        w = fibonacci_word(n)
         P = curve_points(w)
         packed = (P[:, 0].astype(np.int64) << 32) ^ (P[:, 1].astype(np.int64) & 0xFFFFFFFF)
         distinct = np.unique(packed).size
@@ -83,13 +84,14 @@ def odd_graceful_path(p):
 
 
 def oddgraceful(n=11):
-    w = fib_word(n)
+    w = fibonacci_word(n)
     P = curve_points(w)
     p = P.shape[0]
     q = p - 1
     packed = (P[:, 0].astype(np.int64) << 32) ^ (P[:, 1].astype(np.int64) & 0xFFFFFFFF)
     assert np.unique(packed).size == p, "curve is not self-avoiding at this order"
-    print(f"=== F_{n}: |f_{n}| = {len(w)} edges, {p} vertices, abstractly P_{p} ===")
+    print(f"=== order {n}: |W_{n}| = F_{n} = {len(w)} edges, {p} vertices,"
+          f" abstractly P_{p} ===")
     f, g, lam = odd_graceful_path(p)
     induced = sorted(abs(g[i] - g[i + 1]) for i in range(p - 1))
     expect = list(range(1, 2 * q, 2))

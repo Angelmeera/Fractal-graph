@@ -11,10 +11,10 @@ be a curve) estimates its box-counting dimension.  This is the check that
 catches a mistyped coefficient: a wrong ratio turns the attractor into a
 disconnected dust, which is obvious in the render and in the dimension.
 
-NOTE on the Koch snowflake: the seven maps of [39] have as attractor the
-FILLED snowflake region (box dimension 2).  The graph KS_n labeled in the
-paper is its BOUNDARY, the cycle C_{3*4^n}, which is the attractor of the
-four von Koch maps applied to each of the three sides.
+NOTE on the Koch snowflake: the seven maps of [40] have as attractor the
+FILLED snowflake region (box dimension 2), as the paper now states.  The graph
+KS_n that is labeled is its BOUNDARY, the cycle C_{3*4^n}, obtained by applying
+the four von Koch maps to each of the three sides.
 """
 import os, sys, math
 import numpy as np
@@ -36,7 +36,7 @@ def M(a, b, c, d, e, f):
 
 SYSTEMS = {
     # Sierpinski arrowhead: three similarities of ratio 1/2, rotations -120, 0, +120.
-    # The third map is stated with ratio 1/3 in [50]; corrected here to 1/2, as
+    # The third map is stated with ratio 1/3 in [51]; corrected here to 1/2, as
     # required by the dimension ln3/ln2 and the vertex count 3^n + 1 given there.
     "arrowhead": [
         M(-1/4,  S3/4, -S3/4, -1/4, 1/4, S3/4),

@@ -48,7 +48,7 @@ Foundational treatment of the Vicsek fractal using Iterated Function Systems.
 
 Generation and visualization of the Fibonacci word fractal.
 
-- Fibonacci words by symbolic substitution
+- Fibonacci words *W_n* by symbolic substitution
 - Construction of the curve by the odd–even turning rule
 - Visualization at successive orders
 
@@ -64,18 +64,18 @@ These reproduce the computations in Sections 3.5 and 3.6 and the Fibonacci self-
 |---|---|
 | `census.py table6` | Table 6: all C₄-cacti *b* = 1…7 (1, 1, 3, 7, 25, 88, 366) with α-counts (…, 24, 87, 365), Δ ≤ 4 counts to *b* = 9, and a check that every non-α graph found really is C₄⁽ᵇ⁾ |
 | `census.py remark28` | Remark 28: C₈- and C₁₂-cacti with Δ ≤ 4 and at most 4 blocks (1, 1, 4, 15 and 1, 1, 6, 33), all α |
-| `census.py snakes` | last column of Table 6, against Theorem 4.1 of Barrientos |
+| `census.py snakes` | last column of Table 6, against Theorem 4.1 of Barrientos, *Alpha labeling of amalgamated cycles* [59] |
 | `alpha_search.py table4` | Table 4: Amal(K₂,ᵣ, *h*, *m*) for *r* = 2, 3, 4 — prints the CP-SAT status, so the negatives can be seen to be completed INFEASIBLE proofs rather than time-outs |
-| `alpha_search.py table5` | Table 5: α-labelings of C₄⁽ᵏ⁾ for *k* ≤ 4 with λ, *f*(*h*), λ − *f*(*h*), and the INFEASIBLE result at *k* = 5 (Corollary 15) |
-| `claim24.py` | Claim 24 over all 618 pairs (*G*, *c*) with *b* ≤ 6, reported **per pattern** |
+| `alpha_search.py table5` | Table 5: α-labelings of C₄⁽ᵏ⁾ for *k* ≤ 4 with λ, *f*(*h*), λ − *f*(*h*), and the INFEASIBLE result at *k* = 5 — the computational content of Corollaries 15 and 16 |
+| `claim24.py` | Claim 24 over all 618 pairs (*G*, *c*) with *b* ≤ 6, reported **per pattern**; also the exhaustiveness argument of Remark 23 |
 | `spectral.py cor8` | Corollary 8: multiplicity of eigenvalue 2 in *L*(*V_d*) — 5, 20, 100 at *d* = 1, 2, 3 |
 | `spectral.py aut` | Remark 10: \|Aut(*V*₀)\| = 2³, \|Aut(*V*₁)\| = 2⁷ |
 | `spectral.py prop29` | Proposition 29: both pairs of spectral identities, checked numerically |
 | `spectral.py remark30 N` | Remark 30: range of ρ(*A_f*) and λ₂(*L_f*) over *N* graceful labelings of *V*₁ |
 | `spectral.py integrality` | Remark 30: no graceful labeling of *P*₅, *P*₆, *C*₄, *C*₈ gives an integral *L_f* spectrum |
 | `spectral.py rhominus` | Remark 30: the Lemma 1 labeling attains ρ⁻(*P*_{q+1}) for *q* = 3…7 but not *q* = 8 |
-| `fibonacci.py selfavoiding N` | Proposition 3 / Remark 4: self-avoidance of the Fibonacci word curve for every *n* ≤ *N* |
-| `fibonacci.py oddgraceful N` | odd graceful labeling of the Fibonacci word fractal, e.g. *F*₁₁ with 89 edges and induced labels {1, 3, …, 177} |
+| `fibonacci.py selfavoiding N` | Proposition 3 / Remark 4: self-avoidance of the curve of the Fibonacci word *W_n* for every *n* ≤ *N* |
+| `fibonacci.py oddgraceful N` | odd graceful labeling of the Fibonacci word fractal, e.g. order 11, where \|*W*₁₁\| = *F*₁₁ = 89 edges and the induced labels are {1, 3, …, 177} |
 | `ifs.py` | renders and audits all six IFS displays: ratio, rotation and translation of every map, the attractor, and its box-counting dimension |
 
 `common.py` holds the shared constructions (V_d, the coordinate-identified Heighway dragon, vertex amalgamation, the cactus censuses) and the two CP-SAT models of Algorithm 1. Every labeling a solver returns is re-checked independently for injectivity, range and induced-label set, as Algorithm 1 line 21 requires.
@@ -86,11 +86,11 @@ These reproduce the computations in Sections 3.5 and 3.6 and the Fibonacci self-
 
 **Negative results are proofs, not time-outs.** `alpha_search.py` prints the CP-SAT status for every instance; `INFEASIBLE` means the search space was exhausted.
 
-**`claim24.py` reports each pattern separately** rather than stopping at the first that fits, and verifies directly that no α-labeling of a C₄-cactus omits the label λ.
+**`claim24.py` reports each pattern separately** rather than stopping at the first that fits, and it tests four arrangements rather than the two Lemma 22 states. The two extra ones are the arrangements Remark 23 excludes, which require η = λ to be a label unused by *f*′; the script also verifies directly that no α-labeling of a C₄-cactus omits λ, so those two columns come out zero. That is Remark 23's exhaustiveness argument in computational form.
 
 **`spectral.py remark30` is sample-dependent by nature.** The set of labelings returned by the solver depends on version, seed and thread count, so any interval quoted from it should be reported together with the sample size the script prints. A single worker is used, which is required for exhaustive enumeration.
 
-**`ifs.py` is the audit that catches a mistyped coefficient.** A wrong contraction ratio turns the attractor into a disconnected dust, visible both in the render and in the box-counting dimension. Expected dimensions: Sierpiński arrowhead ln 3 / ln 2 ≈ 1.585, Vicsek ln 5 / ln 3 ≈ 1.465, von Koch curve ln 4 / ln 3 ≈ 1.262, dragon and Hilbert 2, and the seven-map Koch snowflake system 2 — that last one is the *filled* region, whereas the graph KSₙ labeled in the paper is its boundary cycle C₃·₄ⁿ.
+**`ifs.py` is the audit that catches a mistyped coefficient.** A wrong contraction ratio turns the attractor into a disconnected dust, visible both in the render and in the box-counting dimension. Expected dimensions: Sierpiński arrowhead ln 3 / ln 2 ≈ 1.585, Vicsek ln 5 / ln 3 ≈ 1.465, von Koch curve ln 4 / ln 3 ≈ 1.262, dragon and Hilbert 2, and the seven-map system of [40] 2 — that last one is the *filled* Koch snowflake region, whereas the graph KSₙ that is labeled is its boundary cycle C₃·₄ⁿ. The third arrowhead map is stated with ratio 1/3 in [51]; `ifs.py` uses the corrected 1/2, as the dimension ln 3 / ln 2 and the vertex count 3ⁿ + 1 recorded there require.
 
 ## Approximate running times
 
