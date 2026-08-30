@@ -1,108 +1,87 @@
-# Fractal Graphs and Graceful Labeling: A Computational Framework
+# Computational verification code
 
-## Overview
+Scripts reproducing the computations reported in *On Graceful Labeling of
+Finite Approximation of Fractal Graphs*. Each script prints the numbers that
+appear in the paper, so a reader can check any table or claim directly.
 
-This repository presents a computational framework for investigating fractal constructions and graph labeling problems, with particular emphasis on **Iterated Function Systems (IFS)** and **graceful labeling techniques**. The work explores the intersection of fractal geometry and graph theory, providing implementations that bridge theoretical constructs with practical applications in communication networks and graph-theoretic optimization.
+These cover Sections 3.5 and 3.6, which the existing notebooks in this
+repository do not, plus the Fibonacci self-avoidance sweep cited in
+Proposition 3 and Remark 4.
 
-## Research Context
+## Requirements
 
-Fractal structures exhibit self-similarity across scales and have proven valuable in modeling complex systems. The Vicsek fractal, introduced by Vicsek (1983) [1], provides a deterministic model for diffusion-controlled aggregation, while the Heighway Dragon curve, analyzed comprehensively by Ngai and Nguyen (2003) [2], demonstrates intricate space-filling properties. This repository extends these classical fractals into the domain of graph theory through graceful labeling—a fundamental problem in graph theory with applications in communication network design, frequency assignment, and channel allocation.
+    pip install networkx numpy ortools matplotlib
 
-## Repository Contents
+## Script → claim
 
-### 1. `Graceful_labeling_of_Viscek_fractal.ipynb`
+| script | reproduces |
+|---|---|
+| `census.py table6` | Table 6: all C₄-cacti *b* = 1…7 (1, 1, 3, 7, 25, 88, 366) with α-counts (…, 24, 87, 365), Δ ≤ 4 counts to *b* = 9, and a check that every non-α graph found really is C₄⁽ᵇ⁾ |
+| `census.py remark28` | Remark 28: C₈- and C₁₂-cacti with Δ ≤ 4 and at most 4 blocks (1, 1, 4, 15 and 1, 1, 6, 33), all α |
+| `census.py snakes` | last column of Table 6, against Theorem 4.1 of [56] |
+| `alpha_search.py table4` | Table 4: Amal(K₂,ᵣ, *h*, *m*) for *r* = 2, 3, 4 — prints the CP-SAT status, so the negatives can be seen to be completed INFEASIBLE proofs rather than time-outs |
+| `alpha_search.py table5` | Table 5: α-labelings of C₄⁽ᵏ⁾ for *k* ≤ 4 with λ, *f*(*h*), λ − *f*(*h*), and the INFEASIBLE result at *k* = 5 (Corollary 15) |
+| `claim24.py` | Claim 24 over all 618 pairs (*G*, *c*) with *b* ≤ 6, reported **per pattern** |
+| `spectral.py cor8` | Corollary 8: multiplicity of eigenvalue 2 in *L*(*V_d*) — 5, 20, 100 at *d* = 1, 2, 3 |
+| `spectral.py aut` | Remark 10: \|Aut(*V*₀)\| = 2³, \|Aut(*V*₁)\| = 2⁷ |
+| `spectral.py prop29` | Proposition 29: both pairs of spectral identities, checked numerically |
+| `spectral.py remark30 N` | Remark 30: range of ρ(*A_f*) and λ₂(*L_f*) over *N* graceful labelings of *V*₁ |
+| `spectral.py integrality` | Remark 30: no graceful labeling of *P*₅, *P*₆, *C*₄, *C*₈ gives an integral *L_f* spectrum |
+| `spectral.py rhominus` | Remark 30: the Lemma 1 labeling attains ρ⁻(*P*_{q+1}) for *q* = 3…7 but not *q* = 8 |
+| `fibonacci.py selfavoiding N` | Proposition 3 / Remark 4: self-avoidance of the Fibonacci word curve for every *n* ≤ *N* |
+| `fibonacci.py oddgraceful N` | odd graceful labeling of the Fibonacci word fractal (Lemma 2), e.g. *F*₁₁ with 89 edges and induced labels {1, 3, …, 177} |
+| `ifs.py` | renders and audits all six IFS displays: ratio, rotation and translation of every map, the attractor, and its box-counting dimension |
 
-This notebook investigates the application of graceful and odd graceful labeling techniques to the Vicsek fractal graph structure.
+`common.py` holds the shared constructions (V_d, the coordinate-identified
+Heighway dragon, vertex amalgamation, the cactus censuses) and the two CP-SAT
+models of Algorithm 1. Every labeling a solver returns is re-checked
+independently for injectivity, range and induced-label set, as Algorithm 1
+line 21 requires.
 
-**Key Features:**
-- Recursive construction of the Vicsek fractal graph through iterative subdivision
-- Implementation of graceful labeling algorithms
-- Extension to odd graceful labeling schemes
-- Applications to communication network design, including potential extensions for frequency assignment and channel allocation problems
+## Notes on reproducibility
 
-**Theoretical Significance:**  
-Graceful labeling of fractal graphs provides structured approaches to resource allocation in hierarchical network topologies, leveraging the self-similar properties of fractals for efficient design patterns.
+**Censuses are exact.** Isomorphism rejection buckets by Weisfeiler–Lehman
+hash and then runs an exact `nx.is_isomorphic` test inside each bucket, so the
+hash is only used to narrow the comparison, never to decide it.
 
-### 2. `Heighway_Dragon.ipynb`
+**Negative results are proofs, not time-outs.** `alpha_search.py` prints the
+CP-SAT status for every instance. `INFEASIBLE` means the search space was
+exhausted.
 
-This notebook implements the Heighway Dragon curve using L-system formalism, exploring its properties as both a fractal object and a potential graph structure.
+**`claim24.py` reports each pattern separately** rather than stopping at the
+first one that fits. Two of the four patterns of Lemma 22 as originally
+printed require η = λ to be a label unused by *f*′, which no α-labeling
+permits: the induced label 1 forces the vertices labeled λ and λ + 1 to be
+adjacent. Those two columns come out identically zero. The script also
+verifies directly that no α-labeling of a C₄-cactus omits the label λ.
 
-**Key Features:**
-- L-system based generation of the Heighway Dragon curve
-- Iterative fractal construction with visualization at multiple depths
-- Graph-theoretic representation of the dragon curve
-- Exploration of graceful labeling applicability to non-uniform fractal structures
+**`spectral.py remark30` is sample-dependent by nature.** The set of labelings
+returned by the solver depends on version, seed and thread count, so any
+interval quoted from it should be reported together with the sample size the
+script prints. The script uses a single worker, which is required for
+exhaustive enumeration.
 
-**Research Direction:**  
-The dragon curve presents unique challenges for graceful labeling due to its non-lattice structure, offering opportunities for developing novel labeling strategies for irregular fractal graphs.
+**`ifs.py` is the audit that catches a mistyped coefficient.** A wrong
+contraction ratio turns the attractor into a disconnected dust, which shows up
+both in the render and in the box-counting dimension. Expected dimensions:
+arrowhead ln 3 / ln 2 ≈ 1.585, Vicsek ln 5 / ln 3 ≈ 1.465, von Koch curve
+ln 4 / ln 3 ≈ 1.262, dragon and Hilbert 2, and the seven-map Koch snowflake
+system 2 — that last one is the *filled* region, whereas the graph KS_n
+labeled in the paper is its boundary cycle C_{3·4ⁿ}.
 
-### 3. `Viscek_Fractal.ipynb`
+## Approximate running times
 
-This notebook provides a foundational treatment of the Vicsek fractal using Iterated Function Systems.
+Single modern core, `ortools` 9.x:
 
-**Key Features:**
-- Mathematical formulation of the IFS defining the Vicsek fractal
-- Computational generation with multi-scale visualizations
-- Geometric and topological analysis
-- Foundation for subsequent graph labeling experiments
-
-**Mathematical Foundation:**  
-The Vicsek fractal serves as an exemplar for studying how deterministic fractal rules translate into graph-theoretic properties, providing insights into the relationship between geometric self-similarity and combinatorial structure.
-
-###4. Fibonacci_Word_Fractal_Odd_Graceful.ipynb**
-
-This notebook explores the Fibonacci word fractal and establishes an odd graceful labeling for the induced path graph.
-
-**Key Features:**
-
--Generation of Fibonacci words using symbolic substitution rules
--Construction of the Fibonacci word fractal via deterministic turning rules
--Graph interpretation of the fractal curve as a path graph
--Explicit odd graceful vertex labeling and induced edge labeling
--Visualization with non-overlapping, scale-invariant labels
-
-**Mathematical Significance:**
-The Fibonacci word fractal provides a bridge between symbolic dynamics and graph labeling theory. Its recursive structure enables inductive proofs of odd graceful labeling and offers insight into labeling problems on self-similar path graphs.
-
-**Research Relevance:** 
-This construction is particularly relevant for:
-
--labeled path decompositions
--fractal graph limits
--recursive network topologies
--extensions to graceful, odd graceful, and α-labelings
- 
-## Dependencies
-
-The computational framework requires the following Python packages:
-
-```bash
-pip install numpy matplotlib networkx ortools
-```
-
-**Package Descriptions:**
-- `numpy`: Numerical computations and array operations
-- `matplotlib`: Visualization of fractals and graph structures
-- `networkx`: Graph construction and analysis
-- `ortools`: Constraint programming and optimization (for labeling algorithms)
-
-## References
-
-[1] Vicsek, T. (1983). Fractal models for diffusion controlled aggregation. *Journal of Physics A: Mathematical and General*, 16(17), L647. https://doi.org/10.1088/0305-4470/16/17/003
-
-[2] Ngai, S.-M., & Nguyen, N. T. (2003). The Heighway Dragon Revisited. *Discrete & Computational Geometry*, 29, 603-623. https://api.semanticscholar.org/CorpusID:8236024
-
-[3] Monnerot-Dumaine, A. (2009). The Fibonacci Word Fractal. HAL Open Science. hal-00367972. https://hal.science/hal-00367972
-
-## Author
-
-**Angel Meera**  
-Indian Institute of Information Technology, Lucknow  
-[Scholar Profile](https://iiitl.ac.in/index.php/personnel/angel-meera/)
-
-## Citation
-
-If you use this code in your research, please cite this repository and acknowledge the foundational works referenced above.
-
-
-*This repository is part of ongoing research in fractal geometry, graph theory, and their applications to network optimization problems.*
+    census.py snakes            ~10 s
+    census.py table6            ~10 min  (b = 7 dominates)
+    census.py remark28          ~5 min
+    alpha_search.py table5      ~1 s
+    alpha_search.py table4      ~2 min
+    claim24.py 4                ~10 s
+    claim24.py 6                ~25 min
+    spectral.py cor8            ~1 s
+    spectral.py rhominus        ~1 s
+    spectral.py remark30        bounded by its own time limit
+    fibonacci.py selfavoiding 30  ~5 s
+    ifs.py                      ~1 min
