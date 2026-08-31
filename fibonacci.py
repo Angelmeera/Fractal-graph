@@ -77,8 +77,12 @@ def odd_graceful_path(p):
         if len(lab) < p:
             lab.append(hi); hi -= 1
     f = {i: lab[i] for i in range(p)}
-    lam = max(v for v in f.values() if v <= q // 2) if q else 0
-    lam = (q - 1) // 2
+    # The zig-zag labeling puts 0, 1, ..., floor(q/2) on the even positions and
+    # q, q-1, ... on the odd ones, so its boundary is lambda = floor(q/2).
+    lam = q // 2
+    assert lam == max(v for v in f.values() if v <= lam)
+    assert all(f[i] <= lam for i in range(0, p, 2)) and \
+           all(f[i] > lam for i in range(1, p, 2))
     g = {v: (2 * a if a <= lam else 2 * a - 1) for v, a in f.items()}
     return f, g, lam
 

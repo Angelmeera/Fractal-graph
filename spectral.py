@@ -1,6 +1,6 @@
 """
 Corollary 8  -- multiplicity of the eigenvalue 2 in the ordinary L(V_d).
-Remark 10    -- |Aut(V_0)| and |Aut(V_1)|.
+Remark 10    -- |Aut(V_d)| = 2^(5^d + 2), for d = 0..4.
 Proposition 29 -- the two pairs of spectral identities for L_f.
 Remark 30    -- the range of rho(A_f) and lambda_2(L_f) over graceful
                 labelings; Laplacian integrality; and rho^-(P_{q+1}).
@@ -10,6 +10,7 @@ Usage:
     python spectral.py aut
     python spectral.py prop29
     python spectral.py remark30 [N]     # N labelings of V_1, default 100000
+    python spectral.py ks1              # Remark 30's KS_1 = C_12 spectral radii
     python spectral.py integrality
     python spectral.py rhominus
 
@@ -25,7 +26,7 @@ import numpy as np
 import networkx as nx
 from ortools.sat.python import cp_model
 from common import (vicsek_graph, graceful_model, weighted_matrices,
-                    check_graceful)
+                    check_graceful, aut_order)
 
 
 def cor8(dmax=3):
@@ -42,15 +43,35 @@ def cor8(dmax=3):
     print("and the multiplicity is 5 rather than 4 at d = 1.")
 
 
-def aut(dmax=1):
-    print("=== Remark 10: automorphism counts ===")
-    from networkx.algorithms.isomorphism import GraphMatcher
+def aut(dmax=4):
+    """
+    Remark 10: |Aut(V_d)| = 2^(5^d + 2), verified for d = 0..4.  Uses nauty's
+    dreadnaut, since the order reaches 2^627 at d = 4 and so cannot be reached
+    by enumerating group elements.  Install nauty with `apt-get install nauty`
+    or `brew install nauty`.
+    """
+    import math
+    print("=== Remark 10: |Aut(V_d)| = 2^e_d with e_d = 5^d + 2 ===")
+    if aut_order(vicsek_graph(0)) is None:
+        print("  dreadnaut not found on PATH.  Install nauty to run this check;")
+        print("  falling back to enumeration, which is feasible only for d <= 1.")
+        from networkx.algorithms.isomorphism import GraphMatcher
+        for d in range(0, min(dmax, 1) + 1):
+            G = vicsek_graph(d)
+            n = sum(1 for _ in GraphMatcher(G, G).isomorphisms_iter())
+            print(f"   d={d}: |Aut| = {n} = 2^{n.bit_length()-1}"
+                  f"   5^d + 2 = {5**d + 2}")
+        return
+    print("   d      p   |Aut(V_d)|                e_d   5^d + 2   match")
     for d in range(0, dmax + 1):
         G = vicsek_graph(d)
-        n = sum(1 for _ in GraphMatcher(G, G).isomorphisms_iter())
-        e = 5 ** d + 2
-        print(f"  |Aut(V_{d})| = {n} = 2^{n.bit_length()-1}   "
-              f"(e_d = 5^{d} + 2 = {e}; bound 2^(4*5^(d-1)+3) for d >= 1)")
+        g = aut_order(G)
+        e = round(math.log2(float(g)))
+        exp = 5 ** d + 2
+        print(f"  {d:2d} {G.number_of_nodes():6d}   {g:22s} {e:5d} {exp:9d}"
+              f"   {e == exp}", flush=True)
+    print("\n  Proposition 9's bound is 2^(4*5^(d-1)+3) for d >= 1; the observed")
+    print("  exponent 5^d + 2 exceeds it, as Remark 10 states.")
 
 
 def prop29(d=1, trials=5):
@@ -115,6 +136,30 @@ def remark30(cap=100000, tl=900):
     print("  Quote them together with the sample size printed above.")
 
 
+def ks1(cap=200000, tl=600):
+    """Remark 30: the Koch snowflake approximation KS_1 = C_12."""
+    G = nx.cycle_graph(12)
+    print(f"=== Remark 30: KS_1 = C_12, p={G.number_of_nodes()}, "
+          f"q={G.number_of_edges()} ===")
+    t = time.time()
+    S = _sample(G, cap, tl)
+    rho = []
+    for f in S:
+        A, _ = weighted_matrices(G, f)
+        rho.append(max(abs(np.linalg.eigvalsh(A))))
+    exhausted = len(S) < cap
+    print(f"  labelings enumerated: {len(S)}   ({time.time()-t:.0f}s)"
+          f"   {'ALL of them' if exhausted else '(cap reached)'}")
+    print(f"  rho(A_f) in [{min(rho):.4f}, {max(rho):.4f}]")
+    if exhausted:
+        print("\n  The enumeration finished inside the cap and the time limit, so")
+        print("  unlike the V_1 figures these are the TRUE extremes for KS_1, not")
+        print("  a sample. They can be stated as exact.")
+    else:
+        print("\n  The cap was reached, so this is a sample, not the true extremes;")
+        print("  quote it together with the sample size printed above.")
+
+
 def integrality():
     print("=== Remark 30: is any L_f spectrum integral? ===")
     cases = [("P_5", nx.path_graph(5)), ("P_6", nx.path_graph(6)),
@@ -167,6 +212,6 @@ if __name__ == "__main__":
     if job == "remark30":
         remark30(int(sys.argv[2]) if len(sys.argv) > 2 else 100000)
     else:
-        {"cor8": cor8, "aut": aut, "prop29": prop29,
+        {"cor8": cor8, "aut": aut, "prop29": prop29, "ks1": ks1,
          "integrality": integrality, "rhominus": rhominus}[job]()
     print(f"\n[{time.time()-t:.0f}s]")

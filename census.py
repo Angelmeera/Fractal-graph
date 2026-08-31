@@ -5,7 +5,7 @@ Remark 28 -- the same for C_8- and C_12-cacti with at most 4 blocks.
 Usage:
     python census.py table6      # Table 6 (all C_4-cacti to b=7, Delta<=4 to b=9)
     python census.py remark28    # Remark 28 (C_8 and C_12, b<=4)
-    python census.py snakes      # the last column of Table 6, and Thm 4.1 of [56]
+    python census.py snakes      # the last column of Table 6
 
 Reproduces:
     all C_4-cacti      b = 1..7 :   1,  1,  3,  7, 25, 88, 366
@@ -14,7 +14,9 @@ Reproduces:
     Delta <= 4         b = 1..9 :   1,  1,  2,  4, 11, 30, 96, 319, 1135
       all alpha (Conjecture 20)
     C_4-snakes         b = 1..9 :   1,  1,  2,  3,  6, 10, 20,  36,   72
-      matching  (1/2)(2^(b-2) + 2^floor((b-1)/2))  for b >= 2   [56, Thm 4.1]
+      matching  (1/2)(2^(b-2) + 2^floor((b-1)/2))  for b >= 2, which is
+      Theorem 4.1 of Barrientos, "Alpha labeling of amalgamated cycles",
+      Theory Appl. Graphs 9(2), 11 (2022)  [reference [59] of the paper]
 """
 import sys, time
 import networkx as nx
@@ -64,7 +66,8 @@ def remark28():
 
 
 def snakes(bmax=9):
-    print("=== C_4-snake counts vs Theorem 4.1 of [56] ===")
+    print("=== C_4-snake counts vs Barrientos, Alpha labeling of "
+          "amalgamated cycles, Thm 4.1 ===")
     D = cactus_census(bmax, 4, delta_le4_only=True, verbose=False)
     print("  b   counted   formula")
     for b in sorted(D):

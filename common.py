@@ -175,6 +175,69 @@ def graceful_model(G):
     return m, x
 
 
+def odd_graceful_model(G):
+    """
+    CP-SAT model for an odd graceful labeling (Algorithm 1, Phase 2): an
+    injective f: V -> {0, ..., 2q-1} whose induced labels are {1, 3, ..., 2q-1}.
+    """
+    q = G.number_of_edges()
+    nodes = list(G.nodes())
+    m = cp_model.CpModel()
+    x = {v: m.NewIntVar(0, 2 * q - 1, f"x{v}") for v in nodes}
+    m.AddAllDifferent(list(x.values()))
+    halves = []
+    for u, v in G.edges():
+        dd = m.NewIntVar(1, 2 * q - 1, "d")
+        m.AddAbsEquality(dd, x[u] - x[v])
+        h = m.NewIntVar(0, q - 1, "h")
+        m.Add(dd == 2 * h + 1)          # forces every induced label odd
+        halves.append(h)
+    m.AddAllDifferent(halves)           # q distinct odd values in [1, 2q-1]
+    return m, x
+
+
+def check_odd_graceful(G, f):
+    q = G.number_of_edges()
+    assert len(set(f.values())) == G.number_of_nodes(), "labels not injective"
+    assert all(0 <= v <= 2 * q - 1 for v in f.values()), "label out of range"
+    lab = sorted(abs(f[u] - f[v]) for u, v in G.edges())
+    assert lab == list(range(1, 2 * q, 2)), "induced labels are not 1,3,...,2q-1"
+    return True
+
+
+def has_odd_graceful(G, tl=300):
+    m, x = odd_graceful_model(G)
+    st, s = solve(m, tl)
+    if st in (cp_model.OPTIMAL, cp_model.FEASIBLE):
+        f = {v: s.Value(x[v]) for v in G.nodes()}
+        check_odd_graceful(G, f)
+        return True
+    if st == cp_model.INFEASIBLE:
+        return False
+    return None
+
+
+def aut_order(G):
+    """
+    |Aut(G)| via nauty's dreadnaut, as a string (nauty prints large orders in
+    scientific notation).  Returns None if dreadnaut is not on PATH; install it
+    with `apt-get install nauty` or `brew install nauty`.
+    """
+    import shutil, subprocess, re
+    if shutil.which("dreadnaut") is None:
+        return None
+    nodes = list(G.nodes())
+    idx = {v: i for i, v in enumerate(nodes)}
+    L = [f"n={len(nodes)}", "g"]
+    for v in nodes:
+        L.append(" ".join(str(idx[u]) for u in G[v]) + ";")
+    L += [".", "-a", "x", "b", "q"]
+    out = subprocess.run(["dreadnaut"], input="\n".join(L) + "\n",
+                         capture_output=True, text=True).stdout
+    m = re.search(r"grpsize=([0-9.eE+]+)", out)
+    return m.group(1) if m else None
+
+
 def solve(m, tl=300, workers=8, seed=0):
     s = cp_model.CpSolver()
     s.parameters.num_search_workers = workers

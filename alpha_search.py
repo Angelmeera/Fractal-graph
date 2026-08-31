@@ -73,8 +73,28 @@ def table5(kmax=5):
     print("Corollary 14 then gives k <= 4, and k = 5 is infeasible above.")
 
 
+def remark18(kmax=9):
+    """Remarks 17 and 18: Amal(C_m, v, k) = C_m^(k) for m = 8 and 12."""
+    print("=== Remarks 17 and 18: C_8^(k) and C_12^(k) ===")
+    for m in (8, 12):
+        print(f"  --- C_{m}^(k) ---")
+        largest = None
+        for k in range(2, kmax + 1):
+            G = amal(nx.cycle_graph(m), 0, k)
+            t = time.time()
+            name, f, lam = _alpha_with_status(G, tl=1800)
+            print(f"   k={k:2d}  p={G.number_of_nodes():4d} q={G.number_of_edges():4d}"
+                  f"  {name:12s} {'alpha' if f else '-':6s} ({time.time()-t:.1f}s)",
+                  flush=True)
+            if f:
+                largest = k
+            elif name == "INFEASIBLE":
+                break
+        print(f"   -> alpha for 2 <= k <= {largest}")
+
+
 if __name__ == "__main__":
     job = sys.argv[1] if len(sys.argv) > 1 else "table4"
     t = time.time()
-    {"table4": table4, "table5": table5}[job]()
+    {"table4": table4, "table5": table5, "remark18": remark18}[job]()
     print(f"\n[{time.time()-t:.0f}s]")
